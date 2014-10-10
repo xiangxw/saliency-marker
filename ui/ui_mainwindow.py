@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'ui/mainwindow.ui'
 #
-# Created: Thu Oct  9 17:26:52 2014
+# Created: Fri Oct 10 16:08:19 2014
 #      by: PyQt5 UI code generator 5.2.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,7 +51,7 @@ class Ui_MainWindow(object):
         self.brushSizeSpinBox = QtWidgets.QSpinBox(self.optionGroupBox)
         self.brushSizeSpinBox.setMinimum(1)
         self.brushSizeSpinBox.setMaximum(100)
-        self.brushSizeSpinBox.setProperty("value", 1)
+        self.brushSizeSpinBox.setProperty("value", 6)
         self.brushSizeSpinBox.setObjectName("brushSizeSpinBox")
         self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.brushSizeSpinBox)
         self.label_3 = QtWidgets.QLabel(self.optionGroupBox)

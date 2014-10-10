@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QScrollArea, QLabel, QFileDialog, QMessageBox
-from PyQt5.QtGui import QImage, QPixmap 
+from PyQt5.QtGui import QImage, QPixmap, QPainter, QColor
 from PyQt5.QtCore import Qt, QCoreApplication, QEvent
 from ui.ui_mainwindow import Ui_MainWindow
 
@@ -12,10 +12,14 @@ class MainWindow(QMainWindow):
 
         # image label
         self.ui.imageScrollArea = ImageScrollArea()
+        self.ui.imageScrollArea.setBrushWidth(self.ui.brushSizeSpinBox.value())
+        self.ui.imageScrollArea.setBrushValue(self.ui.brushValueDoubleSpinBox.value())
         self.ui.imageGroupBoxLayout.addWidget(self.ui.imageScrollArea)
 
         # signal and slot
         self.ui.openAction.triggered.connect(self.slotOpen)
+        self.ui.brushSizeSpinBox.valueChanged.connect(self.ui.imageScrollArea.setBrushWidth)
+        self.ui.brushValueDoubleSpinBox.valueChanged.connect(self.ui.imageScrollArea.setBrushValue)
 
     # open a image file
     def slotOpen(self):
@@ -36,16 +40,16 @@ class ImageScrollArea(QScrollArea):
         self.imageLabel = QLabel()
         self.setWidget(self.imageLabel)
         self.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.installEventFilter(self)
+        self.imageLabel.installEventFilter(self)
 
         # internal data
-        self.mousePressed = False
         self.scaleToViewport = True
         self.scale = 1.0
         self.originImage = None
         self.scaledImage = None
         self.brushWidth = 1
         self.brushValue = 1
+        self.brushColor = Qt.red
 
     # set brush width
     def setBrushWidth(self, width):
@@ -57,25 +61,26 @@ class ImageScrollArea(QScrollArea):
 
     # open a image file
     def open(self, filename):
-        self.originImage = QImage(filename)
-        if self.originImage.isNull():
+        image = QImage(filename)
+        if image.isNull():
             QMessageBox.critical(self, self.tr('Error'),
                                  self.tr('Open image file error: %s') % (filename))
         else:
+            self.originImage = image
             self.__scaleImageToSize(self.viewport().size())
 
     # event filter
     def eventFilter(self, watched, event):
         if watched == self.imageLabel:
-            if event.type() == QEvent.MouseButtonPress:
-                self.mousePressed = True
-                return True
-            elif event.type() == QEvent.MouseButtonRelease:
-                self.mousePressed = False
-                return True
-            elif event.type() == QEvent.MouseMove:
-                if self.mousePressed:
-                    print(event.x(), event.y(), self.maximumSize())
+            if event.type() == QEvent.MouseMove:
+                if (event.buttons() & Qt.LeftButton):
+                    pixmap = self.imageLabel.pixmap()
+                    painter = QPainter()
+                    painter.begin(pixmap)
+                    painter.fillRect(event.x() - self.brushWidth, event.y() - self.brushWidth,
+                            self.brushWidth * 2, self.brushWidth * 2, self.brushColor)
+                    painter.end()
+                    self.imageLabel.setPixmap(pixmap)
                     return True
         return super().eventFilter(watched, event)
 
@@ -95,9 +100,9 @@ class ImageScrollArea(QScrollArea):
 
     # zoom
     def __zoom(self, step):
-        self.scaleToViewport = False
         scale = self.scale + 0.1 * step
         if scale > 0:
+            self.scaleToViewport = False
             self.__scaleImage(scale)
 
     # scale image
