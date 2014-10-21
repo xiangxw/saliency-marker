@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(slotSave()));
     connect(ui->saveAsAction, SIGNAL(triggered()),
             this, SLOT(slotSaveAs()));
+    connect(ui->resetAction, SIGNAL(triggered()),
+            this, SLOT(slotReset()));
     connect(ui->brushSizeSpinBox, SIGNAL(valueChanged(int)),
             imageScrollArea, SLOT(setBrushWidth(int)));
     connect(ui->brushValueSpinBox, SIGNAL(valueChanged(int)),
@@ -87,6 +89,11 @@ void MainWindow::slotSaveAs()
     }
 }
 
+void MainWindow::slotReset()
+{
+    imageScrollArea->reset();
+}
+
 ImageScrollArea::ImageScrollArea(QWidget *parent)
     : QScrollArea(parent)
     , imageLabel(new QLabel)
@@ -116,17 +123,7 @@ void ImageScrollArea::open(const QString &filename)
                 tr("Open image file error: %1").arg(filename));
     } else {
         m_originImage = image;
-
-        // output
-        m_outputImage = QImage(image.width(), image.height(), QImage::Format_Indexed8);
-        m_outputImage.fill(0);
-        QVector<QRgb> colorTable;
-        for (int i = 0; i < 256; ++i) {
-            colorTable.append(qRgb(i, i, i));
-        }
-        m_outputImage.setColorTable(colorTable);
-        qobject_cast<MainWindow *>(this->window())->setPreviewImage(m_outputImage);
-
+        resetOutputImage();
         scaleImageToSize(this->viewport()->size());
     }
 }
@@ -134,6 +131,12 @@ void ImageScrollArea::open(const QString &filename)
 void ImageScrollArea::save(const QString &filename)
 {
     m_outputImage.save(filename);
+}
+
+void ImageScrollArea::reset()
+{
+    resetOutputImage();
+    imageLabel->update();
 }
 
 bool ImageScrollArea::eventFilter(QObject *watched, QEvent *event)
@@ -278,6 +281,22 @@ void ImageScrollArea::fillScaledImage(const QRect &rect)
         for (int x = x1; x <= x2; ++x) {
             line[x] = uchar(m_brushValue);
         }
+    }
+}
+
+void ImageScrollArea::resetOutputImage()
+{
+    if (m_originImage.isNull()) {
+        m_outputImage = QImage();
+    } else {
+        m_outputImage = QImage(m_originImage.width(), m_originImage.height(), QImage::Format_Indexed8);
+        m_outputImage.fill(0);
+        QVector<QRgb> colorTable;
+        for (int i = 0; i < 256; ++i) {
+            colorTable.append(qRgb(i, i, i));
+        }
+        m_outputImage.setColorTable(colorTable);
+        qobject_cast<MainWindow *>(this->window())->setPreviewImage(m_outputImage);
     }
 }
 

@@ -24,6 +24,7 @@ private slots:
     void slotOpen();
     void slotSave();
     void slotSaveAs();
+    void slotReset();
 
 private:
     Ui_MainWindow *ui;
@@ -44,6 +45,7 @@ public slots:
     void setBrushValue(int value) {m_brushValue = value;}
     void open(const QString &filename);
     void save(const QString &filename);
+    void reset();
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
@@ -54,6 +56,7 @@ private:
     void scaleImage(float scale);
     void scaleImageToSize(const QSize &size);
     void fillScaledImage(const QRect &rect);
+    void resetOutputImage();
     void updateStatusBar();
 
     QLabel *imageLabel;
