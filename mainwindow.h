@@ -20,6 +20,10 @@ public:
 
     void setPreviewImage(const QImage &image);
 
+protected:
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
+
 private slots:
     void slotOpen();
     void slotSave();

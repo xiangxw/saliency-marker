@@ -106,9 +106,7 @@
             <item>
              <widget class="QLabel" name="helpLabel">
               <property name="text">
-               <string>Step 1: Set brush size(with of the brush rect).
-Step 2: Set value of the brush to paint(from 0 to 255).
-Step 3: Brush the image and save it(8-bit image).</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Step1: Click the &amp;quot;Open&amp;quot; button or drog a file to&lt;/p&gt;&lt;p&gt;              this window to open a image file.&lt;/p&gt;&lt;p&gt;Step 2: Set brush size.&lt;/p&gt;&lt;p&gt;Step 3: Set saliency value of the brush to paint&lt;/p&gt;&lt;p&gt;               (from 0 to 255).&lt;/p&gt;&lt;p&gt;Step 4: Brush the image and save it(8-bit image).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
@@ -137,7 +135,7 @@ Step 3: Brush the image and save it(8-bit image).</string>
             </size>
            </property>
            <property name="title">
-            <string>Preview</string>
+            <string>Saliency Preview</string>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>

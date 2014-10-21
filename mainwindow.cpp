@@ -11,6 +11,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QMimeData>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
@@ -37,11 +38,35 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             imageScrollArea, SLOT(setBrushWidth(int)));
     connect(ui->brushValueSpinBox, SIGNAL(valueChanged(int)),
             imageScrollArea, SLOT(setBrushValue(int)));
+
+    // drop
+    this->setAcceptDrops(true);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls()) {
+        event->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    QUrl url;
+    QString filename;
+
+    url = event->mimeData()->urls()[0];
+    filename = url.toLocalFile();
+    if (!filename.isEmpty()) {
+        m_filename = filename;
+        imageScrollArea->open(m_filename);
+        event->acceptProposedAction();
+    }
 }
 
 void MainWindow::setPreviewImage(const QImage &image)
