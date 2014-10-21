@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             imageScrollArea, SLOT(setBrushWidth(int)));
     connect(ui->brushValueSpinBox, SIGNAL(valueChanged(int)),
             imageScrollArea, SLOT(setBrushValue(int)));
+    connect(ui->saveButton, SIGNAL(clicked()),
+            imageScrollArea, SLOT(save()));
 }
 
 MainWindow::~MainWindow()
@@ -76,8 +78,23 @@ void ImageScrollArea::open(const QString &filename)
     } else {
         m_filename = filename;
         m_originImage = image;
-        m_outputImage = QImage(image.width(), image.height(), QImage::Format_ARGB32);
+        m_outputImage = QImage(image.width(), image.height(), QImage::Format_Indexed8);
+        m_outputImage.fill(0);
+        QVector<QRgb> colorTable;
+        uint rgb = 0xff000000;
+        for (int i = 0; i < 256; ++i) {
+            colorTable.append(rgb);
+            rgb += 0x00010101;
+        }
+        m_outputImage.setColorTable(colorTable);
         scaleImageToSize(this->viewport()->size());
+    }
+}
+
+void ImageScrollArea::save()
+{
+    if (!m_outputImage.isNull()) {
+        m_outputImage.save("a.png");
     }
 }
 
@@ -91,6 +108,7 @@ bool ImageScrollArea::eventFilter(QObject *watched, QEvent *event)
                 if (mouseEvent->buttons() & Qt::LeftButton) {
                     QRect rect(mouseEvent->x() - m_brushWidth, mouseEvent->y() - m_brushWidth,
                                m_brushWidth * 2, m_brushWidth * 2);
+                    rect = rect.intersected(m_scaledImage.rect());
                     fillScaledImage(rect);
                     imageLabel->update(rect);
                 }
@@ -110,12 +128,12 @@ bool ImageScrollArea::eventFilter(QObject *watched, QEvent *event)
                 }
 
                 // points
-                x1 = std::max(0, rect.left());
-                y1 = std::max(0, rect.top());
+                x1 = rect.left();
+                y1 = rect.top();
                 x2 = rect.right();
                 y2 = rect.bottom();
                 for (int y = y1; y <= y2; ++y) {
-                    quint32 *line = reinterpret_cast<quint32 *>(m_outputImage.scanLine(int(y / m_scale)));
+                    uchar *line = m_outputImage.scanLine(int(y / m_scale));
                     for (int x = x1; x <= x2; ++x) {
                         if (line[int(x / m_scale)]) {
                             points[pointNum].setX(x);
@@ -211,15 +229,15 @@ void ImageScrollArea::fillScaledImage(const QRect &rect)
 {
     int x1, y1, x2, y2;
 
-    x1 = std::max(0, int(rect.left() / m_scale));
-    y1 = std::max(0, int(rect.top() / m_scale));
+    x1 = int(rect.left() / m_scale);
+    y1 = int(rect.top() / m_scale);
     x2 = int(rect.right() / m_scale);
     y2 = int(rect.bottom() / m_scale);
 
     for (int y = y1; y <= y2; ++y) {
-        quint32 *line = reinterpret_cast<quint32 *>(m_outputImage.scanLine(y));
+        uchar *line = m_outputImage.scanLine(y);
         for (int x = x1; x <= x2; ++x) {
-            line[x] = m_brushValue;
+            line[x] = uchar(m_brushValue);
         }
     }
 }

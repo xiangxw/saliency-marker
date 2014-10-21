@@ -38,6 +38,7 @@ public slots:
     void setBrushWidth(int width) {m_brushWidth = width;}
     void setBrushValue(int value) {m_brushValue = value;}
     void open(const QString &filename);
+    void save();
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
