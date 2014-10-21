@@ -36,7 +36,7 @@ public:
 
 public slots:
     void setBrushWidth(int width) {m_brushWidth = width;}
-    void setBrushValue(double value) {m_brushValue = float(value);}
+    void setBrushValue(int value) {m_brushValue = value;}
     void open(const QString &filename);
 
 protected:
@@ -47,15 +47,18 @@ private:
     void zoom(int step);
     void scaleImage(float scale);
     void scaleImageToSize(const QSize &size);
+    void fillScaledImage(const QRect &rect);
     void updateStatusBar();
 
     QLabel *imageLabel;
     bool m_scaleToViewport;
     float m_scale;
+    QString m_filename;
     QImage m_originImage;
+    QImage m_outputImage;
     QImage m_scaledImage;
     int m_brushWidth;
-    float m_brushValue;
+    int m_brushValue;
     QColor m_brushColor;
 };
 
