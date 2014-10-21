@@ -37,6 +37,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::setPreviewImage(const QImage &image)
+{
+    QSize size = ui->previewImageLabel->maximumSize();
+    float scale;
+
+    scale = std::min(float(size.width()) / image.width(), float(size.height()) / image.height());
+    ui->previewImageLabel->setPixmap(QPixmap::fromImage(image.scaled(image.width() * scale, image.height() * scale)));
+    ui->previewImageLabel->repaint();
+}
+
 void MainWindow::slotOpen()
 {
     QString filename;
@@ -78,15 +88,17 @@ void ImageScrollArea::open(const QString &filename)
     } else {
         m_filename = filename;
         m_originImage = image;
+
+        // output
         m_outputImage = QImage(image.width(), image.height(), QImage::Format_Indexed8);
         m_outputImage.fill(0);
         QVector<QRgb> colorTable;
-        uint rgb = 0xff000000;
         for (int i = 0; i < 256; ++i) {
-            colorTable.append(rgb);
-            rgb += 0x00010101;
+            colorTable.append(qRgb(i, i, i));
         }
         m_outputImage.setColorTable(colorTable);
+        qobject_cast<MainWindow *>(this->window())->setPreviewImage(m_outputImage);
+
         scaleImageToSize(this->viewport()->size());
     }
 }
@@ -110,6 +122,7 @@ bool ImageScrollArea::eventFilter(QObject *watched, QEvent *event)
                                m_brushWidth * 2, m_brushWidth * 2);
                     rect = rect.intersected(m_scaledImage.rect());
                     fillScaledImage(rect);
+                    qobject_cast<MainWindow *>(this->window())->setPreviewImage(m_outputImage);
                     imageLabel->update(rect);
                 }
             }

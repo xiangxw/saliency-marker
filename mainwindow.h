@@ -18,6 +18,8 @@ public:
     MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~MainWindow();
 
+    void setPreviewImage(const QImage &image);
+
 private slots:
     void slotOpen();
 
