@@ -22,10 +22,13 @@ public:
 
 private slots:
     void slotOpen();
+    void slotSave();
+    void slotSaveAs();
 
 private:
     Ui_MainWindow *ui;
     ImageScrollArea *imageScrollArea;
+    QString m_filename;
 };
 
 class ImageScrollArea : public QScrollArea
@@ -40,7 +43,7 @@ public slots:
     void setBrushWidth(int width) {m_brushWidth = width;}
     void setBrushValue(int value) {m_brushValue = value;}
     void open(const QString &filename);
-    void save();
+    void save(const QString &filename);
 
 protected:
     bool eventFilter(QObject *watched, QEvent *event);
@@ -56,7 +59,6 @@ private:
     QLabel *imageLabel;
     bool m_scaleToViewport;
     float m_scale;
-    QString m_filename;
     QImage m_originImage;
     QImage m_outputImage;
     QImage m_scaledImage;

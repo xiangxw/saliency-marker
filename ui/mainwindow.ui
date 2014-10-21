@@ -116,37 +116,6 @@ Step 3: Brush the image and save it(8-bit image).</string>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="saveButton">
-             <property name="text">
-              <string>&amp;Save</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="saveAsButton">
-             <property name="text">
-              <string>Save &amp;As</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -212,6 +181,9 @@ Step 3: Brush the image and save it(8-bit image).</string>
    </attribute>
    <addaction name="openAction"/>
    <addaction name="saveAction"/>
+   <addaction name="saveAsAction"/>
+   <addaction name="separator"/>
+   <addaction name="resetAction"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="openAction">
@@ -230,10 +202,32 @@ Step 3: Brush the image and save it(8-bit image).</string>
     <string>Save</string>
    </property>
    <property name="toolTip">
-    <string>Save Result        Ctrl+S</string>
+    <string>Save to the same directory with the original image        Ctrl+S</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="saveAsAction">
+   <property name="text">
+    <string>Save As</string>
+   </property>
+   <property name="toolTip">
+    <string>Save As        Ctrl+Shift+S</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="resetAction">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+   <property name="toolTip">
+    <string>Reset        Ctrl+R</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

@@ -8,6 +8,9 @@
 #include <QResizeEvent>
 #include <QWheelEvent>
 #include <QMouseEvent>
+#include <QDir>
+#include <QFileInfo>
+#include <QFileDialog>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
@@ -24,12 +27,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
     // signals and slots
     connect(ui->openAction, SIGNAL(triggered()),
             this, SLOT(slotOpen()));
+    connect(ui->saveAction, SIGNAL(triggered()),
+            this, SLOT(slotSave()));
+    connect(ui->saveAsAction, SIGNAL(triggered()),
+            this, SLOT(slotSaveAs()));
     connect(ui->brushSizeSpinBox, SIGNAL(valueChanged(int)),
             imageScrollArea, SLOT(setBrushWidth(int)));
     connect(ui->brushValueSpinBox, SIGNAL(valueChanged(int)),
             imageScrollArea, SLOT(setBrushValue(int)));
-    connect(ui->saveButton, SIGNAL(clicked()),
-            imageScrollArea, SLOT(save()));
 }
 
 MainWindow::~MainWindow()
@@ -55,6 +60,30 @@ void MainWindow::slotOpen()
             tr("Images (*.png *.jpg *.jpeg *.bmp *.pbm *.pgm *.ppm *.xbm *.xpm)"));
     if (!filename.isEmpty()) {
         imageScrollArea->open(filename);
+        m_filename = filename;
+    }
+}
+
+void MainWindow::slotSave()
+{
+    QFileInfo info(m_filename);
+    QDir dir;
+    QString filename;
+
+    if (!m_filename.isEmpty() && info.exists()) {
+        dir = info.dir();
+        filename = dir.filePath(info.baseName() + "_saliency.png");
+        imageScrollArea->save(filename);
+    }
+}
+
+void MainWindow::slotSaveAs()
+{
+    QString filename;
+
+    filename = QFileDialog::getSaveFileName(this, tr("Save As"), ".", tr("Images (*.png)"));
+    if (!filename.isEmpty()) {
+        imageScrollArea->save(filename);
     }
 }
 
@@ -86,7 +115,6 @@ void ImageScrollArea::open(const QString &filename)
         QMessageBox::critical(this, tr("Error"),
                 tr("Open image file error: %1").arg(filename));
     } else {
-        m_filename = filename;
         m_originImage = image;
 
         // output
@@ -103,11 +131,9 @@ void ImageScrollArea::open(const QString &filename)
     }
 }
 
-void ImageScrollArea::save()
+void ImageScrollArea::save(const QString &filename)
 {
-    if (!m_outputImage.isNull()) {
-        m_outputImage.save("a.png");
-    }
+    m_outputImage.save(filename);
 }
 
 bool ImageScrollArea::eventFilter(QObject *watched, QEvent *event)
