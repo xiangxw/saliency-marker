@@ -32,6 +32,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags)
             this, SLOT(slotSave()));
     connect(ui->saveAsAction, SIGNAL(triggered()),
             this, SLOT(slotSaveAs()));
+    connect(ui->zoomInAction, SIGNAL(triggered()),
+            imageScrollArea, SLOT(zoomIn()));
+    connect(ui->zoomOutAction, SIGNAL(triggered()),
+            imageScrollArea, SLOT(zoomOut()));
+    connect(ui->adjustToWindowAction, SIGNAL(triggered()),
+            imageScrollArea, SLOT(adjustToWindow()));
     connect(ui->resetAction, SIGNAL(triggered()),
             this, SLOT(slotReset()));
     connect(ui->brushSizeSpinBox, SIGNAL(valueChanged(int)),
@@ -149,13 +155,31 @@ void ImageScrollArea::open(const QString &filename)
     } else {
         m_originImage = image;
         resetOutputImage();
-        scaleImageToSize(this->viewport()->size());
+        adjustToWindow();
     }
 }
 
 void ImageScrollArea::save(const QString &filename)
 {
     m_outputImage.save(filename);
+}
+
+void ImageScrollArea::zoomIn()
+{
+    zoom(1);
+}
+
+void ImageScrollArea::zoomOut()
+{
+    zoom(-1);
+}
+
+void ImageScrollArea::adjustToWindow()
+{
+    if (!m_originImage.isNull()) {
+        scaleImageToSize(this->viewport()->size());
+        m_scaleToViewport = true;
+    }
 }
 
 void ImageScrollArea::reset()
@@ -264,7 +288,7 @@ void ImageScrollArea::zoom(int step)
     float scale = m_scale;
 
     scale += step * 0.1f;
-    if (scale > 0) {
+    if (scale > 0 && !m_originImage.isNull()) {
         m_scaleToViewport = false;
         scaleImage(scale);
     }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1031</width>
-    <height>600</height>
+    <height>679</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -181,6 +181,10 @@
    <addaction name="saveAction"/>
    <addaction name="saveAsAction"/>
    <addaction name="separator"/>
+   <addaction name="zoomInAction"/>
+   <addaction name="zoomOutAction"/>
+   <addaction name="adjustToWindowAction"/>
+   <addaction name="separator"/>
    <addaction name="resetAction"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -226,6 +230,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="zoomInAction">
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+  </action>
+  <action name="zoomOutAction">
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+  </action>
+  <action name="adjustToWindowAction">
+   <property name="text">
+    <string>Adjust to Window</string>
    </property>
   </action>
  </widget>

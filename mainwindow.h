@@ -49,6 +49,9 @@ public slots:
     void setBrushValue(int value) {m_brushValue = value;}
     void open(const QString &filename);
     void save(const QString &filename);
+    void zoomIn();
+    void zoomOut();
+    void adjustToWindow();
     void reset();
 
 protected:
