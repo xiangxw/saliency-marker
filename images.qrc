@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/saliency-marker.png</file>
+        <file>images/saliency-marker.svg</file>
+    </qresource>
+</RCC>
