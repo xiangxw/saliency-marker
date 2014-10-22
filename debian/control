@@ -1,0 +1,13 @@
+Source: saliency-marker
+Section: education
+Priority: optional
+Maintainer: xiangxw <xiangxw5689@126.com>
+Build-Depends: debhelper (>= 8.0.0), cmake, qtbase5-dev
+Standards-Version: 3.9.4
+Homepage: https://github.com/xiangxw/saliency-marker
+
+Package: saliency-marker
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Saliency Marker
+ Saliency Marker
