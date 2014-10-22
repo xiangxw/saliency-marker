@@ -13,3 +13,5 @@ add_executable (${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES}
                                 ${${PROJECT_NAME}_HEADERS}
                                 ${${PROJECT_NAME}_UIS})
 target_link_libraries (${PROJECT_NAME} Qt5::Widgets)
+install (TARGETS ${PROJECT_NAME}
+         RUNTIME DESTINATION /usr/bin/)
