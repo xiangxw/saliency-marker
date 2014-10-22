@@ -19,3 +19,5 @@ Install CMake and Qt5, then:
     cmake ..
     make
 ```
+
+Sould work on Windows, Mac and other Linux distributions.
